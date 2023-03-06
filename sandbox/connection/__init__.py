@@ -1,10 +1,9 @@
 import os
 import sys
-import cx_Oracle as oracledb
-from sqlalchemy import create_engine, event
+import cx_Oracle
+from sqlalchemy import create_engine
 import getpass
-# import oracledb
-import snoop
+import oracledb
 
 
 connection_type = 'RDBMS'
@@ -16,9 +15,7 @@ db_name = 'DKWH'
 dsn = str(server+"/"+db_name)
 # print('dsn:\t', dsn)
 
-#oracledb.init_oracle_client()
 
-@snoop
 def create_connection(username:str,pwd:str,server:str,port:int,db_name:str):
     """
     :param username:str
@@ -37,17 +34,15 @@ def create_connection(username:str,pwd:str,server:str,port:int,db_name:str):
     print('connection test:\t', conn)
     print('Connection Successful>>>>')
     # cursor = conn.cursor
-    return conn, engine
+    return conn #, cursor
 
 
-def create_conn_alter(user_name,pwd,dsn):
-    connect = oracledb.connect(user=user_name,
-                               password=pwd,
-                               dsn=dsn)
-    print('connection test:\t', connect)
-    print('Connection Successful>>>>')
-    cursor = connect.cursor()
-    return connect, cursor
+def connnect(username:str,pwd:str,server:str,port:int,db_name:str):
+    conn_str = u"oracle+cx_oracle://" + username + ":" + pwd + "@" + server + ":" + str(port) + "/" + db_name
+    engine = create_engine(conn_str, fast_executemany=True)
+    conn = engine.connect()
+
+    return conn
 
 
 if __name__ == '__main__':
